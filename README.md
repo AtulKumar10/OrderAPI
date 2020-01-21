@@ -1,78 +1,145 @@
-<p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
+# RESTful API for order service
+Rest API for order list, creation and updation
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+## Docker, language, Framework, Database and server requirement
 
-## About Laravel
+- [Docker](https://www.docker.com/) as the container service to isolate the environment.
+- [Php](https://php.net/) to develop backend support.
+- [Laravel](https://laravel.com/docs) is a stunningly fast PHP micro-framework for building web applications
+- [MySQL](https://mysql.com/) as the database layer
+- [Apache](https://httpd.apache.org/docs/) as a proxy layer
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## How to Install & Run
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+1.  Clone the repository.
+2.  We have used the google distance matrix api for distance calculation and you need your own API key. 
+    Update 'GOOGLE_API_KEY' in environment file located in ./api/.env file.
+3.  Run `./start.sh` to build docker containers, executing migration and PHPUnit test cases and        
+    generating code coverage report
+4.  After starting container following will be executed automatically:
+	- Table migrations using artisan migrate command.
+  - Unit and Integration test cases execution.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Manually Starting the docker and test Cases
 
-## Learning Laravel
+1. You can run `docker-compose up` from terminal
+2. Server is accessible at `http://localhost:8000`
+3. Run manual testcase suite:
+	- Integration Tests: `docker exec order_php php ./vendor/bin/phpunit ./tests/Feature/` &
+	- Unit Tests: `docker exec order_php php ./vendor/bin/phpunit ./tests/Unit/`
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Coverage report
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1. Open URL `http://localhost/CodeCoverage` for code coverage report
 
-## Laravel Sponsors
+## Swagger integration
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+1. Open URL `http://localhost/api/documentation` for API demo
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-- [Abdel Elrafa](https://abdelelrafa.com)
-- [Hyper Host](https://hyper.host)
-- [Appoly](https://www.appoly.co.uk)
-- [OP.GG](https://op.gg)
+## Code Structure
+api folder contains application code
 
-## Contributing
+**./tests**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- this folder contains test cases files written in UnitTest and Integration folders
 
-## Code of Conduct
+**./app**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- contains all the configuration files, controllers, models, services, helpers and validators
+- database/migrations folder contains the migration files
+	- To manually run migrations use this command `docker exec order_php php artisan migrate`
+- `OrderController` contains all the api's methods :
+    1. localhost/orders?page=1&limit=4 - GET url to fetch orders list with page and limit
+    2. localhost/orders - POST method to create new order with origin and destination
+    3. localhost/orders - PATCH method to update status for taken.
+       (Handled simultaneous update request from multiple users at the same time by returning response status 422 if the order is already taken)
+- `OrderService` contains the business logic.
 
-## Security Vulnerabilities
+## API Reference Documentation
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- `localhost/orders?page=:page&limit=:limit` :
 
-## License
+    GET Method - to fetch orders with page number and limit
+    1. Header :
+        - GET /orders?page=0&limit=5 HTTP/1.1
+        - Host: localhost
+        - Content-Type: application/json
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+    2. Responses :
+
+    ```
+            - Response
+            [
+              {
+                "id": 1,
+                "distance": 46732,
+                "status": "TAKEN"
+              },
+              {
+                "id": 2,
+                "distance": 46731,
+                "status": "UNASSIGNED"
+              }
+            ]
+    ```
+
+        Code                    Description
+        - 200                   successful operation
+        - 422                   Invalid Request Parameter
+
+- `localhost/orders` :
+
+    POST Method - to create a new order with origin and destination coordinates
+    1. Header :
+        - POST /orders HTTP/1.1
+        - Host: localhost
+        - Content-Type: application/json
+
+    2. Post-Data :
+    ```
+         {
+            "origin" :["26.345209", "76.193421"],
+            "destination" :["27.573221", "77.1003452"]
+         }
+    ```
+
+    3. Responses :
+    ```
+            - Response
+            {
+              "id": 21,
+              "distance": 0,
+              "status": "UNASSIGNED"
+            }
+    ```
+
+        Code                    Description
+        - 200                   successful operation
+        - 405                   Invalid Inputs
+
+- `localhost/orders/:id` :
+
+    PATCH method to update status for taken.(Handled simultaneous update request from multiple users at the same time with response status 409)
+    1. Header :
+        - PATCH /orders/44 HTTP/1.1
+        - Host: localhost
+        - Content-Type: application/json
+    2. Post-Data :
+    ```
+         {
+            "status" : "TAKEN"
+         }
+    ```
+
+    3. Responses :
+    ```
+            - Response
+            {
+              "status": "SUCCESS"
+            }
+    ```
+
+        Code                    Description
+        - 200                   Successful operation
+        - 422                   Invalid Request Parameter
+        - 409                   Order already taken
