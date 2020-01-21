@@ -23,7 +23,7 @@ Rest API for order list, creation and updation
 ## Manually Starting the docker and test Cases
 
 1. You can run `docker-compose up` from terminal
-2. Server is accessible at `http://localhost:8000`
+2. Server is accessible at `http://localhost`
 3. Run manual testcase suite:
 	- Integration Tests: `docker exec order_php php ./vendor/bin/phpunit ./tests/Feature/` &
 	- Unit Tests: `docker exec order_php php ./vendor/bin/phpunit ./tests/Unit/`
@@ -121,7 +121,7 @@ api folder contains application code
 
     PATCH method to update status for taken.(Handled simultaneous update request from multiple users at the same time with response status 409)
     1. Header :
-        - PATCH /orders/44 HTTP/1.1
+        - PATCH /orders/20 HTTP/1.1
         - Host: localhost
         - Content-Type: application/json
     2. Post-Data :
